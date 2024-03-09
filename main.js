@@ -1,46 +1,48 @@
+noseX=0;
+noseY=0;
+
+function preload() {
+  clownNose = loadImage('https://i.postimg.cc/cHns3xh2/Ilustra-o-Bigode-PNG.png');
+}
+
 function setup() {
-    canvas = createCanvas(280, 280);
-    canvas.center();
-    background("white");
-    canvas.mouseReleaded(classifyCanvas);
-    synth = window.speechSynthesis;
+  canvas = createCanvas(300, 300);
+  canvas.center();
+  video = createCapture(VIDEO);
+  video.size(300, 300);
+  video.hide();
+ 
+  poseNet = ml5.poseNet(video, modelLoaded);
+  poseNet.on('pose', gotPoses);
 }
 
-function clearCanvas() {
-
-    background("white");
+function modelLoaded(){
+  console.log("PoseNet is On");
 }
 
-function preload(){
-classifier = ml5.imageClassifier('DoodleNet');
-}
 
 function draw() {
-    strokeWeigth(13);
-    stroke(0);
-
-    if (mouseIsPressed) {
-        AudioListener(pmouseY , pmouseX, mouseY);
-    } 
+ image(video, 0, 0, 300, 300);
+ image(clownNose, noseX, noseY, 30, 30);
 }
 
-function classifyCanvas() {
-    classifierl.classify(canvas, gotResult);
+function takeSnapshot(){    
+  save('myFilterImage.png');
 }
 
-function gotResult(error, results) {
-    if (error) {
-        console,error(error);
-    } 
-    console.log(results);
-    var Results = results[0].label;
-    document.getElementById('confidence').InnerHTML = 'Nome: ' + results.replace('_', ' ');
+function gotPoses(results){
+if(results.length > 0)
+{
 
-
-    document.getElementsByName('confidence').innerHTML = 'Precisão: '
-                                            +Math.round(results[0].confidence * 100) + '%';
-
-    utterThis = new SpeechSynthesisUtterance(result.replace('_', ' '));
-    synth.speak(utterThis);                                        
-
+console.log(results);
+noseX = results[0].pose.nose.x-15
+noseY = results[0].pose.nose.y-15
+console.log("nose x = " + results[0].pose.nose.x);
+console.log("nose y = " + results[0].pose.nose.y);
 }
+}
+
+function modelLoaded(){
+  console.log("PoseNet is On")
+}
+
